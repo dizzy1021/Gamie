@@ -56,7 +56,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
-    implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
+    api "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
 
     // UI
     api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"

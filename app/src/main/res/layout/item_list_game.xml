@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
-            android:src="@color/black" />
+            android:src="?attr/colorOnPrimary" />
 
     </androidx.cardview.widget.CardView>
 
@@ -35,7 +35,7 @@
         android:layout_marginStart="16dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_semibold"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="18sp"
         tools:text="Avengers" />
 
@@ -48,7 +48,7 @@
         android:layout_marginEnd="16dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_semibold"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="18sp"
         tools:text="8.2" />
 
