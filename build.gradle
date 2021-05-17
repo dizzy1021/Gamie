@@ -39,6 +39,7 @@ buildscript {
         kotlinTestVersion = "3.3.2"
         slf4jVersion = "1.7.9"
         truthVersion = "1.1.2"
+        dynamicFeaturesVersion = "2.3.5"
     }
 
     repositories {

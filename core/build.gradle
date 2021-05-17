@@ -5,6 +5,8 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+apply from: '../shared_dependencies.gradle'
+
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolVersion

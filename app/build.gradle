@@ -37,11 +37,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    dynamicFeatures = [':favorite']
+    dynamicFeatures = [':favorite', ':search']
 }
 
 dependencies {
     implementation project(":core")
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$dynamicFeaturesVersion"
 
     implementation "com.google.android.play:core:$playCoreVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
