@@ -23,6 +23,10 @@ android {
         buildConfigField("String", "RAWG_TOKEN", '"bea5877e5c294bd9976495a972ac2c3d"')
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
