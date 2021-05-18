@@ -278,9 +278,6 @@ data class StoresItemGames(
 @Parcelize
 data class PlatformsItemGames(
 
-	@field:SerializedName("requirements_ru")
-	val requirementsRu: String?,
-
 	@field:SerializedName("requirements_en")
 	val requirementsEn: RequirementsEn?,
 

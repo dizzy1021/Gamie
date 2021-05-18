@@ -5,9 +5,32 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:indeterminateTint="@color/blue"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/networkError"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center_vertical"
+        android:text="@string/no_internet_connection"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="22sp"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_home"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="match_parent"/>
 
 </FrameLayout>

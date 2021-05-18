@@ -31,6 +31,12 @@ class GameAdapter : RecyclerView.Adapter<GameAdapter.ListViewHolder>() {
                 this.gamesRating.text = items.rating.toString()
                 this.gamesTitle.text = items.name
                 Glide.with(itemView.context).load(items.poster).into(this.posterGame)
+                Glide.with(itemView.context)
+                    .load(items.poster)
+                    .error(R.drawable.ic_no_image)
+                    .placeholder(R.drawable.ic_loading)
+                    .into(this.posterGame)
+
             }
 
             itemView.setOnClickListener { onItemClickCallback?.onItemClicked(items) }

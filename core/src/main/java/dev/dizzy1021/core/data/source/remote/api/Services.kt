@@ -12,7 +12,8 @@ interface Services {
 
     @GET("games")
     suspend fun callGames(
-        @Query("key") key: String = BuildConfig.RAWG_TOKEN
+        @Query("search") search: String = "",
+        @Query("key") key: String = BuildConfig.RAWG_TOKEN,
     ): Response<ResponseGames>
 
     @GET("games/{id}")
