@@ -9,7 +9,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val useCase: GameUseCase
-): ViewModel() {
+) : ViewModel() {
 
     val games = useCase.callGames().asLiveData()
 

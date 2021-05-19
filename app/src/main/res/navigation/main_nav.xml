@@ -9,7 +9,7 @@
         android:id="@+id/splashFragment"
         android:name="dev.dizzy1021.gamie.ui.splash.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_splashFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -21,7 +21,7 @@
         android:id="@+id/homeFragment"
         android:name="dev.dizzy1021.gamie.ui.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_favoriteFragment"
             app:destination="@id/favoriteFragment" />
@@ -37,7 +37,7 @@
         android:name="dev.dizzy1021.favorite.FavoriteFragment"
         app:moduleName="Gamie.favorite"
         android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" >
+        tools:layout="@layout/fragment_favorite">
         <action
             android:id="@+id/action_favoriteFragment_to_detailFragment2"
             app:destination="@id/detailFragment2" />
@@ -47,7 +47,7 @@
         android:name="dev.dizzy1021.search.SearchFragment"
         app:moduleName="Gamie.search"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_detailFragment2"
             app:destination="@id/detailFragment2" />
@@ -56,8 +56,9 @@
         android:id="@+id/detailFragment2"
         android:name="dev.dizzy1021.gamie.ui.detail.DetailFragment"
         android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" >
-        <argument android:name="id"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="id"
             app:argType="integer" />
     </fragment>
 </navigation>

@@ -43,7 +43,8 @@ class HomeFragment : Fragment() {
 
         val adapter = GameAdapter()
 
-        binding.rvHome.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.rvHome.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.rvHome.adapter = adapter
         binding.rvHome.setHasFixedSize(true)
 
@@ -56,7 +57,7 @@ class HomeFragment : Fragment() {
         if (isNetworkAvailable(requireActivity())) {
             viewModel.games.observe(viewLifecycleOwner, { game ->
                 if (game != null) {
-                    when(game.state) {
+                    when (game.state) {
                         State.PENDING -> {
                             binding.progressBar.isVisible = true
                             binding.rvHome.isGone = true

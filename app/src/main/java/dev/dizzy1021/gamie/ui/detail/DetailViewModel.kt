@@ -12,9 +12,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val useCase: GameUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    val game: (Int) -> LiveData<ResponseWrapper<Game>> = { id->
+    val game: (Int) -> LiveData<ResponseWrapper<Game>> = { id ->
         useCase.callGame(id).asLiveData()
     }
 
