@@ -43,6 +43,7 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val idGame = DetailFragmentArgs.fromBundle(arguments as Bundle).id
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
 
         viewModel.game(idGame).observe(viewLifecycleOwner, { res ->
             if (res != null) {
@@ -60,7 +61,7 @@ class DetailFragment : Fragment() {
                         binding.titlePublisher.isVisible = true
 
                         game = res.data
-                        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+                        favorited = game?.isFavorite == true
 
                         if (game?.isFavorite == true) {
                             actionBar.menu.findItem(R.id.add_favorite).icon =
@@ -69,7 +70,6 @@ class DetailFragment : Fragment() {
                             actionBar.menu.findItem(R.id.add_favorite).icon =
                                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
                         }
-
 
                         with(binding) {
                             Glide.with(this@DetailFragment)

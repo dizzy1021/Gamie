@@ -24,6 +24,10 @@ android {
 
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     buildFeatures {
         viewBinding = true
     }
@@ -57,4 +61,8 @@ dependencies {
 
 kapt {
     correctErrorTypes true
+}
+
+hilt {
+    enableExperimentalClasspathAggregation = true
 }

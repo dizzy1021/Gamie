@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
                     State.FAILURE -> {
                         binding.progressBar.isGone = true
                         binding.networkError.isVisible = true
-                        binding.rvHome.isVisible = true
+                        binding.rvHome.isGone = true
                     }
                 }
             }

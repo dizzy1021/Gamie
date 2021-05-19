@@ -1,61 +1,106 @@
 package dev.dizzy1021.favorite
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dagger.hilt.android.EntryPointAccessors
+import dev.dizzy1021.core.adapter.GameAdapter
+import dev.dizzy1021.core.domain.model.Game
+import dev.dizzy1021.favorite.databinding.FragmentFavoriteBinding
+import dev.dizzy1021.gamie.R
+import dev.dizzy1021.gamie.di.DynamicFeaturesDependencies
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavoriteFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding as FragmentFavoriteBinding
+
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private val viewModel: FavoriteViewModel by viewModels { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        setHasOptionsMenu(true)
+
+        DaggerFavoriteComponent.factory().create(
+            EntryPointAccessors.fromApplication(requireContext(), DynamicFeaturesDependencies::class.java)
+        ).inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FavoriteFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavoriteFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val adapter = GameAdapter()
+
+        binding.rvFavorite.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.rvFavorite.adapter = adapter
+        binding.rvFavorite.setHasFixedSize(true)
+
+        adapter.setOnItemClickCallback(object : GameAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: Game) {
+                navigateToDetailRepository(data.id)
             }
+        })
+
+        viewModel.games.observe(viewLifecycleOwner, { game ->
+            if (game != null) {
+                binding.progressBar.isGone = true
+                binding.emptyList.isGone = true
+                binding.rvFavorite.isVisible = true
+
+                adapter.submitList(game)
+
+                if (adapter.itemCount == 0) {
+                    binding.progressBar.isGone = true
+                    binding.emptyList.isVisible = true
+                    binding.rvFavorite.isGone = true
+                }
+
+            }
+        })
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+        actionBar?.title = getString(R.string.favorite_games)
+        actionBar?.isVisible = true
+
+        actionBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+        actionBar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun navigateToDetailRepository(id: Int) {
+        val toDetail =
+            FavoriteFragmentDirections.actionFavoriteFragmentToDetailFragment2(id)
+        findNavController().navigate(toDetail)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
