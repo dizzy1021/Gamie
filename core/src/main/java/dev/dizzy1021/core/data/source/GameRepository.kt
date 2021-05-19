@@ -51,8 +51,8 @@ class GameRepository @Inject constructor(
                 remoteDataSource.getGame(id)
 
             override suspend fun saveCallResult(data: ResponseGame, save: Game) {
-                val list = data.toEntity(save)
-                localDataSource.updateGame(list)
+                val game = data.toEntity(save)
+                appExecutors.diskIO().execute { localDataSource.updateGame(game) }
             }
 
         }.asFlow()
@@ -71,7 +71,7 @@ class GameRepository @Inject constructor(
 
     override fun updateGame(game: Game) {
         EspressoIdlingResource.increment()
-        appExecutors.diskIO().execute { localDataSource.updateGame(game.toEntity() ) }
+        appExecutors.diskIO().execute { localDataSource.updateGame(game.toEntity()) }
         EspressoIdlingResource.decrement()
     }
 

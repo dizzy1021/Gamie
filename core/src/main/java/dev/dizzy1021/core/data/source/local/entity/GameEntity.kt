@@ -20,5 +20,5 @@ data class GameEntity(
     val publisherPoster: String?,
     val genres: String?,
     val screenshot: String?,
-    val isFavorite: Boolean = false,
+    var isFavorite: Boolean = false,
 )

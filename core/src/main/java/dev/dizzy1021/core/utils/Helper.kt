@@ -77,13 +77,13 @@ fun ResponseGame.toEntity(save: Game? = null): GameEntity =
         GameEntity(
             id = this.id,
             name = this.name,
-            desc = this.description,
+            desc = this.descriptionRaw,
             rating = this.rating,
             poster = this.backgroundImage,
             website = this.website,
             date = this.released,
             publisher = this.publishers[0]?.name,
-            publisherPoster = this.publishers[0]?.name,
+            publisherPoster = this.publishers[0]?.imageBackground,
             genres = save?.genres,
             screenshot = save?.screenshot,
             isFavorite = save?.isFavorite == true

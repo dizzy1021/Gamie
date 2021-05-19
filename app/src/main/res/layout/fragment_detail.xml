@@ -1,56 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    tools:context=".ui.detail.DetailFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/games_poster"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:src="?attr/colorOnPrimary"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:contentDescription="@string/games_poster" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingBottom="50dp"
+        tools:context=".ui.detail.DetailFragment">
 
-    <TextView
-        android:id="@id/games_title"
-        app:layout_constraintTop_toBottomOf="@+id/games_poster"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Resident Evil : Village "
-        android:textColor="?attr/colorOnPrimary"
-        android:fontFamily="@font/montserrat_semibold"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <ProgressBar
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="300dp"
+            android:visibility="gone" />
 
-    <TextView
-        app:layout_constraintTop_toBottomOf="@+id/games_poster"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="8.2"
-        android:textColor="?attr/colorOnPrimary"
-        android:fontFamily="@font/montserrat_semibold"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <TextView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/network_error"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/no_internet_connection"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="22sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/games_poster"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:contentDescription="@string/games_poster" />
+
+        <TextView
+            android:id="@id/games_title"
+            app:layout_constraintTop_toBottomOf="@+id/games_poster"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Resident Evil : Village "
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/games_genres"
+            app:layout_constraintTop_toBottomOf="@+id/games_title"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Adventure, Action, Horror"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginTop="5dp"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/games_date"
+            app:layout_constraintTop_toBottomOf="@+id/games_genres"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Release at 25 Feb 2021"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginTop="5dp"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="SmallSp" />
+
+        <ImageView
+            android:id="@+id/icon_star"
+            app:layout_constraintTop_toBottomOf="@+id/games_poster"
+            app:layout_constraintRight_toLeftOf="@id/games_rating"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            app:tint="@color/yellow"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="@string/poster"
+            android:src="@drawable/ic_baseline_star_24" />
+
+        <TextView
+            android:id="@id/games_rating"
+            app:layout_constraintTop_toBottomOf="@+id/games_poster"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="8.2"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/games_desc"
+            app:layout_constraintTop_toBottomOf="@+id/games_date"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_regular"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/title_publisher"
+            app:layout_constraintTop_toBottomOf="@+id/games_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/publisher_title"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_semibold"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/games_publisher_poster"
+            app:layout_constraintTop_toBottomOf="@+id/title_publisher"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="5dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="5dp"
+            android:layout_width="80dp"
+            android:layout_height="130dp"
+            android:contentDescription="@string/publisher" />
+
+        <TextView
+            android:id="@+id/games_publisher"
+            app:layout_constraintTop_toBottomOf="@+id/games_publisher_poster"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Rockstar Games"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/montserrat_semibold"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="SmallSp" />
 
 
-    <TextView
-        app:layout_constraintTop_toBottomOf="@+id/games_title"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
-        android:textColor="?attr/colorOnPrimary"
-        android:fontFamily="@font/montserrat_regular"
-        android:layout_marginTop="16dp"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
