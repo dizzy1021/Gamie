@@ -14,9 +14,9 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataSource @Inject constructor(private val services: Services) {
 
-    suspend fun getGames(): Flow<ResponseWrapper<List<ResultsItemGames>>> {
+    suspend fun getGames(search: String = ""): Flow<ResponseWrapper<List<ResultsItemGames>>> {
         return flow {
-            services.callGames().let {
+            services.callGames(search).let {
                if (it.isSuccessful) {
                    emit(ResponseWrapper.success(it.body()?.results))
                } else {

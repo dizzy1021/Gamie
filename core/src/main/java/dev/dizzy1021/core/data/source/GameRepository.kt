@@ -19,17 +19,18 @@ class GameRepository @Inject constructor(
     private val appExecutors: AppExecutors
 ): IGameRepository {
 
-    override fun callGames(): Flow<ResponseWrapper<List<Game>>> =
+    override fun callGames(search: String): Flow<ResponseWrapper<List<Game>>> =
         object : NetworkBoundResource<List<Game>, List<ResultsItemGames>>() {
             override fun loadFromDB(): Flow<List<Game>> =
-                localDataSource.getGames().map {
+                localDataSource.getGames(search).map {
                     it.toDomain()
                 }
 
-            override fun shouldFetch(data: List<Game>?): Boolean = data == null || data.isEmpty()
+            override fun shouldFetch(data: List<Game>?): Boolean =
+                data == null || data.isEmpty() || search != ""
 
             override suspend fun createCall(): Flow<ResponseWrapper<List<ResultsItemGames>>> =
-                remoteDataSource.getGames()
+                remoteDataSource.getGames(search)
 
             override suspend fun saveCallResult(data: List<ResultsItemGames>, save: List<Game>) {
                 val list = data.toEntities()

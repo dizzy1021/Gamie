@@ -4,10 +4,10 @@
     package="dev.dizzy1021.search">
 
     <dist:module
-        dist:instant="true"
+        dist:instant="false"
         dist:title="@string/title_search">
         <dist:delivery>
-            <dist:on-demand />
+            <dist:on-install-time />
         </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>

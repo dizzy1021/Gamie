@@ -15,6 +15,7 @@ import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.core.utils.State
 import dev.dizzy1021.gamie.R
 import dev.dizzy1021.gamie.databinding.FragmentHomeBinding
+import dev.dizzy1021.gamie.util.isNetworkAvailable
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -52,29 +53,35 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.games.observe(viewLifecycleOwner, { game ->
-            if (game != null) {
-                when(game.state) {
-                    State.PENDING -> {
-                        binding.progressBar.isVisible = true
-                        binding.rvHome.isGone = true
-                        binding.networkError.isGone = true
-                    }
-                    State.SUCCESS -> {
-                        binding.progressBar.isGone = true
-                        binding.networkError.isGone = true
-                        binding.rvHome.isVisible = true
+        if (isNetworkAvailable(requireActivity())) {
+            viewModel.games.observe(viewLifecycleOwner, { game ->
+                if (game != null) {
+                    when(game.state) {
+                        State.PENDING -> {
+                            binding.progressBar.isVisible = true
+                            binding.rvHome.isGone = true
+                            binding.networkError.isGone = true
+                        }
+                        State.SUCCESS -> {
+                            binding.progressBar.isGone = true
+                            binding.networkError.isGone = true
+                            binding.rvHome.isVisible = true
 
-                        game.data?.let { adapter.submitList(it) }
-                    }
-                    State.FAILURE -> {
-                        binding.progressBar.isGone = true
-                        binding.networkError.isVisible = true
-                        binding.rvHome.isGone = true
+                            game.data?.let { adapter.submitList(it) }
+                        }
+                        State.FAILURE -> {
+                            binding.progressBar.isGone = true
+                            binding.networkError.isVisible = true
+                            binding.rvHome.isGone = true
+                        }
                     }
                 }
-            }
-        })
+            })
+        } else {
+            binding.progressBar.isGone = true
+            binding.networkError.isVisible = true
+            binding.rvHome.isGone = true
+        }
 
     }
 

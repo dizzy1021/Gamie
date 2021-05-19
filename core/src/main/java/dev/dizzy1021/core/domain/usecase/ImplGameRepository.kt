@@ -10,7 +10,7 @@ class ImplGameRepository @Inject constructor(
     private val gameRepository: IGameRepository
 ): GameUseCase {
 
-    override fun callGames(): Flow<ResponseWrapper<List<Game>>> = gameRepository.callGames()
+    override fun callGames(search: String): Flow<ResponseWrapper<List<Game>>> = gameRepository.callGames(search)
 
     override fun callGame(id: Int): Flow<ResponseWrapper<Game>> = gameRepository.callGame(id)
 

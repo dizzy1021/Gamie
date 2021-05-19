@@ -5,7 +5,7 @@ import dev.dizzy1021.core.utils.ResponseWrapper
 import kotlinx.coroutines.flow.Flow
 
 interface GameUseCase {
-    fun callGames(): Flow<ResponseWrapper<List<Game>>>
+    fun callGames(search: String = ""): Flow<ResponseWrapper<List<Game>>>
 
     fun callGame(id: Int): Flow<ResponseWrapper<Game>>
 

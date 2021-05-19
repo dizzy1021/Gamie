@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface IGameRepository {
 
-    fun callGames(): Flow<ResponseWrapper<List<Game>>>
+    fun callGames(search: String = ""): Flow<ResponseWrapper<List<Game>>>
 
     fun callGame(id: Int): Flow<ResponseWrapper<Game>>
 

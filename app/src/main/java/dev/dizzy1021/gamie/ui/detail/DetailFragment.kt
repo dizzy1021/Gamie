@@ -15,6 +15,7 @@ import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.core.utils.State
 import dev.dizzy1021.gamie.R
 import dev.dizzy1021.gamie.databinding.FragmentDetailBinding
+import dev.dizzy1021.gamie.util.isNetworkAvailable
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
@@ -45,67 +46,82 @@ class DetailFragment : Fragment() {
         val idGame = DetailFragmentArgs.fromBundle(arguments as Bundle).id
         val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
 
-        viewModel.game(idGame).observe(viewLifecycleOwner, { res ->
-            if (res != null) {
-                when(res.state) {
-                    State.PENDING -> {
-                        binding.progressBar.isVisible = true
-                        binding.iconStar.isGone = true
-                        binding.titlePublisher.isGone = true
-                        binding.networkError.isGone = true
-                    }
-                    State.SUCCESS -> {
-                        binding.progressBar.isGone = true
-                        binding.networkError.isGone = true
-                        binding.iconStar.isVisible = true
-                        binding.titlePublisher.isVisible = true
-
-                        game = res.data
-                        favorited = game?.isFavorite == true
-
-                        if (game?.isFavorite == true) {
-                            actionBar.menu.findItem(R.id.add_favorite).icon =
-                                ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_favorite_24)
-                        } else {
-                            actionBar.menu.findItem(R.id.add_favorite).icon =
-                                ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_favorite_border_24)
+        if (isNetworkAvailable(requireActivity())) {
+            viewModel.game(idGame).observe(viewLifecycleOwner, { res ->
+                if (res != null) {
+                    when (res.state) {
+                        State.PENDING -> {
+                            binding.progressBar.isVisible = true
+                            binding.iconStar.isGone = true
+                            binding.titlePublisher.isGone = true
+                            binding.networkError.isGone = true
                         }
+                        State.SUCCESS -> {
+                            binding.progressBar.isGone = true
+                            binding.networkError.isGone = true
+                            binding.iconStar.isVisible = true
+                            binding.titlePublisher.isVisible = true
 
-                        with(binding) {
-                            Glide.with(this@DetailFragment)
-                                .load(game?.poster)
-                                .error(dev.dizzy1021.core.R.drawable.ic_no_image)
-                                .placeholder(dev.dizzy1021.core.R.drawable.ic_loading)
-                                .into(gamesPoster)
+                            game = res.data
+                            favorited = game?.isFavorite == true
 
-                            Glide.with(this@DetailFragment)
-                                .load(game?.publisherPoster)
-                                .error(dev.dizzy1021.core.R.drawable.ic_no_image)
-                                .placeholder(dev.dizzy1021.core.R.drawable.ic_loading)
-                                .into(gamesPublisherPoster)
+                            if (game?.isFavorite == true) {
+                                actionBar.menu.findItem(R.id.add_favorite).icon =
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        R.drawable.ic_baseline_favorite_24
+                                    )
+                            } else {
+                                actionBar.menu.findItem(R.id.add_favorite).icon =
+                                    ContextCompat.getDrawable(
+                                        requireContext(),
+                                        R.drawable.ic_baseline_favorite_border_24
+                                    )
+                            }
 
-                            gamesTitle.text = game?.name
-                            gamesRating.text = game?.rating.toString()
-                            gamesGenres.text = game?.genres
+                            with(binding) {
+                                Glide.with(this@DetailFragment)
+                                    .load(game?.poster)
+                                    .error(dev.dizzy1021.core.R.drawable.ic_no_image)
+                                    .placeholder(dev.dizzy1021.core.R.drawable.ic_loading)
+                                    .into(gamesPoster)
 
-                            val stringBuilder = StringBuilder()
+                                Glide.with(this@DetailFragment)
+                                    .load(game?.publisherPoster)
+                                    .error(dev.dizzy1021.core.R.drawable.ic_no_image)
+                                    .placeholder(dev.dizzy1021.core.R.drawable.ic_loading)
+                                    .into(gamesPublisherPoster)
 
-                            gamesDate.text = stringBuilder.append(getString(R.string.release_at)).append(" ").append(game?.date)
-                            gamesDesc.text = game?.desc
-                            gamesPublisher.text = game?.publisher
+                                gamesTitle.text = game?.name
+                                gamesRating.text = game?.rating.toString()
+                                gamesGenres.text = game?.genres
+
+                                val stringBuilder = StringBuilder()
+
+                                gamesDate.text =
+                                    stringBuilder.append(getString(R.string.release_at)).append(" ")
+                                        .append(game?.date)
+                                gamesDesc.text = game?.desc
+                                gamesPublisher.text = game?.publisher
+
+                            }
 
                         }
-
-                    }
-                    State.FAILURE -> {
-                        binding.progressBar.isGone = true
-                        binding.networkError.isVisible = true
-                        binding.iconStar.isVisible = true
-                        binding.titlePublisher.isVisible = true
+                        State.FAILURE -> {
+                            binding.progressBar.isGone = true
+                            binding.networkError.isVisible = true
+                            binding.iconStar.isGone = true
+                            binding.titlePublisher.isGone = true
+                        }
                     }
                 }
-            }
-        })
+            })
+        } else {
+            binding.progressBar.isGone = true
+            binding.networkError.isVisible = true
+            binding.iconStar.isGone = true
+            binding.titlePublisher.isGone = true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

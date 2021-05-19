@@ -1,61 +1,145 @@
 package dev.dizzy1021.search
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import dagger.hilt.android.EntryPointAccessors
+import dev.dizzy1021.core.adapter.GameAdapter
+import dev.dizzy1021.core.domain.model.Game
+import dev.dizzy1021.core.utils.State
+import dev.dizzy1021.gamie.R
+import dev.dizzy1021.gamie.di.DynamicFeaturesDependencies
+import dev.dizzy1021.gamie.util.isNetworkAvailable
+import dev.dizzy1021.search.databinding.FragmentSearchBinding
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-@AndroidEntryPoint
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding as FragmentSearchBinding
+
+    @Inject
+    lateinit var factory: ViewModelFactory
+
+    private val viewModel: SearchViewModel by viewModels { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        setHasOptionsMenu(true)
+
+        DaggerSearchComponent.factory().create(
+            EntryPointAccessors.fromApplication(requireContext(), DynamicFeaturesDependencies::class.java)
+        ).inject(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        binding.backButton.setOnClickListener { activity?.onBackPressed() }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+        actionBar.title = null
+        actionBar.isGone = true
+
+        val adapter = GameAdapter()
+
+        binding.rvSearch.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.rvSearch.adapter = adapter
+        binding.rvSearch.setHasFixedSize(true)
+
+        adapter.setOnItemClickCallback(object : GameAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: Game) {
+                navigateToDetailRepository(data.id)
             }
+        })
+
+        if (isNetworkAvailable(requireActivity())) {
+
+            val searchManager =
+                requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+            binding.networkError.isGone = true
+            binding.searchData.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+            binding.searchData.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+
+                    if (query != null) {
+                        viewModel.games(query).observe(viewLifecycleOwner, { game ->
+                            if (game != null) {
+                                when(game.state) {
+                                    State.PENDING -> {
+                                        binding.progressBar.isVisible = true
+                                        binding.rvSearch.isGone = true
+                                        binding.networkError.isGone = true
+                                    }
+                                    State.SUCCESS -> {
+                                        binding.progressBar.isGone = true
+                                        binding.networkError.isGone = true
+                                        binding.rvSearch.isVisible = true
+
+                                        game.data?.let { adapter.submitList(it) }
+                                    }
+                                    State.FAILURE -> {
+                                        binding.progressBar.isGone = true
+                                        binding.networkError.isVisible = true
+                                        binding.rvSearch.isGone = true
+                                    }
+                                }
+                            }
+                        })
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return if (newText != "") {
+                        binding.searchBanner.isGone = true
+                        true
+                    } else {
+                        if(!binding.rvSearch.isVisible) binding.searchBanner.isVisible = true
+                        false
+                    }
+                }
+
+            })
+
+
+        } else {
+            binding.searchBanner.isGone = true
+            binding.networkError.isVisible = true
+        }
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun navigateToDetailRepository(id: Int) {
+        val toDetail =
+            SearchFragmentDirections.actionSearchFragmentToDetailFragment2(id)
+        findNavController().navigate(toDetail)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
