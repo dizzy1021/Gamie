@@ -1,23 +1,33 @@
 package dev.dizzy1021.search
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.core.domain.usecase.GameUseCase
-import dev.dizzy1021.core.utils.ResponseWrapper
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
+@FlowPreview
+@ExperimentalCoroutinesApi
 class SearchViewModel @Inject constructor(
     private val useCase: GameUseCase
 ): ViewModel() {
 
-    val games: (String) -> LiveData<ResponseWrapper<List<Game>>> = { search->
-        Log.d("SearchFunction", "ViewModel - $search")
-        useCase.callGames(search).asLiveData()
-    }
+    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
+    val searchResult = queryChannel.asFlow()
+        .debounce(500)
+        .distinctUntilChanged()
+        .filter {
+            it.trim().isNotEmpty()
+        }
+        .flatMapLatest {
+            useCase.callGames(it)
+        }
+        .asLiveData()
 }

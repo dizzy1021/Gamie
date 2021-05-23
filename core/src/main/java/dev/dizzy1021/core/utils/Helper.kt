@@ -82,8 +82,8 @@ fun ResponseGame.toEntity(save: Game? = null): GameEntity =
             poster = this.backgroundImage,
             website = this.website,
             date = this.released,
-            publisher = this.publishers[0]?.name,
-            publisherPoster = this.publishers[0]?.imageBackground,
+            publisher = if (this.publishers.isNotEmpty()) this.publishers[0]?.name else "",
+            publisherPoster = if (this.publishers.isNotEmpty()) this.publishers[0]?.imageBackground else "",
             genres = save?.genres,
             screenshot = save?.screenshot,
             isFavorite = save?.isFavorite == true

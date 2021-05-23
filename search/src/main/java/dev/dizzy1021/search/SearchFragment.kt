@@ -3,6 +3,7 @@ package dev.dizzy1021.search
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -10,6 +11,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import dagger.hilt.android.EntryPointAccessors
@@ -20,8 +22,13 @@ import dev.dizzy1021.gamie.R
 import dev.dizzy1021.gamie.di.DynamicFeaturesDependencies
 import dev.dizzy1021.gamie.util.isNetworkAvailable
 import dev.dizzy1021.search.databinding.FragmentSearchBinding
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
@@ -49,16 +56,6 @@ class SearchFragment : Fragment() {
 
         binding.backButton.setOnClickListener { activity?.onBackPressed() }
 
-        return binding.root
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-
-        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
-        actionBar.title = null
-        actionBar.isGone = true
-
         val adapter = GameAdapter()
 
         binding.rvSearch.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -71,6 +68,44 @@ class SearchFragment : Fragment() {
             }
         })
 
+        viewModel.searchResult.observe(viewLifecycleOwner, { game ->
+            if (game != null) {
+                binding.searchBanner.isGone = true
+                when(game.state) {
+                    State.PENDING -> {
+                        binding.progressBar.isVisible = true
+                        binding.rvSearch.isGone = true
+                        binding.networkError.isGone = true
+                    }
+                    State.SUCCESS -> {
+                        binding.progressBar.isGone = true
+                        binding.networkError.isGone = true
+                        binding.rvSearch.isVisible = true
+
+                        game.data?.let { adapter.submitList(it) }
+
+                        adapter.notifyDataSetChanged()
+                    }
+                    State.FAILURE -> {
+                        binding.progressBar.isGone = true
+                        binding.networkError.isVisible = true
+                        binding.rvSearch.isGone = true
+                    }
+                }
+            }
+            Log.d("Search Fragment", "Hello - $game")
+        })
+
+        return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+        actionBar.title = null
+        actionBar.isGone = true
+
         if (isNetworkAvailable(requireActivity())) {
 
             val searchManager =
@@ -78,51 +113,28 @@ class SearchFragment : Fragment() {
 
             binding.networkError.isGone = true
             binding.searchData.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+
             binding.searchData.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-
-                    if (query != null) {
-                        viewModel.games(query).observe(viewLifecycleOwner, { game ->
-                            if (game != null) {
-                                when(game.state) {
-                                    State.PENDING -> {
-                                        binding.progressBar.isVisible = true
-                                        binding.rvSearch.isGone = true
-                                        binding.networkError.isGone = true
-                                    }
-                                    State.SUCCESS -> {
-                                        binding.progressBar.isGone = true
-                                        binding.networkError.isGone = true
-                                        binding.rvSearch.isVisible = true
-
-                                        game.data?.let { adapter.submitList(it) }
-                                    }
-                                    State.FAILURE -> {
-                                        binding.progressBar.isGone = true
-                                        binding.networkError.isVisible = true
-                                        binding.rvSearch.isGone = true
-                                    }
-                                }
-                            }
-                        })
-                        return true
-                    } else {
-                        return false
-                    }
+                    return query != null
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     return if (newText != "") {
                         binding.searchBanner.isGone = true
+
+                        lifecycleScope.launch {
+                            viewModel.queryChannel.send(newText.toString())
+                        }
+
                         true
                     } else {
-                        if(!binding.rvSearch.isVisible) binding.searchBanner.isVisible = true
+                        if(binding.rvSearch.isVisible) binding.searchBanner.isGone = true
                         false
                     }
                 }
 
             })
-
 
         } else {
             binding.searchBanner.isGone = true
