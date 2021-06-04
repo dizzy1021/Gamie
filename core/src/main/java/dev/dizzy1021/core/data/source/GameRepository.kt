@@ -2,13 +2,11 @@ package dev.dizzy1021.core.data.source
 
 import dev.dizzy1021.core.data.source.local.LocalDataSource
 import dev.dizzy1021.core.data.source.remote.RemoteDataSource
-import dev.dizzy1021.core.data.source.remote.response.ResponseGame
-import dev.dizzy1021.core.data.source.remote.response.ResultsItemGames
 import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.core.domain.repository.IGameRepository
 import dev.dizzy1021.core.utils.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,43 +18,48 @@ class GameRepository @Inject constructor(
 ): IGameRepository {
 
     override fun callGames(search: String): Flow<ResponseWrapper<List<Game>>> =
-        object : NetworkBoundResource<List<Game>, List<ResultsItemGames>>() {
-            override fun loadFromDB(): Flow<List<Game>> =
-                localDataSource.getGames(search).map {
-                    it.toDomain()
+        flow {
+            EspressoIdlingResource.increment()
+            emit(ResponseWrapper.pending(null))
+
+            val response = remoteDataSource.getGames(search = search)
+                .first()
+
+            when (response.state) {
+                State.SUCCESS -> {
+                    val result = response.data?.toModel()
+
+                    emit(ResponseWrapper.success(result))
                 }
-
-            override fun shouldFetch(data: List<Game>?): Boolean =
-                data == null || data.isEmpty() || search != ""
-
-            override suspend fun createCall(): Flow<ResponseWrapper<List<ResultsItemGames>>> =
-                remoteDataSource.getGames(search)
-
-            override suspend fun saveCallResult(data: List<ResultsItemGames>, save: List<Game>) {
-                val list = data.toEntities()
-                localDataSource.insertBatchGame(list)
+                State.FAILURE -> {
+                    emit(ResponseWrapper.failure(response.message.toString(), null))
+                }
+                State.PENDING -> {}
             }
-
-        }.asFlow()
+            EspressoIdlingResource.decrement()
+        }.flowOn(Dispatchers.IO)
 
     override fun callGame(id: Int): Flow<ResponseWrapper<Game>> =
-        object : NetworkBoundResource<Game, ResponseGame>() {
-            override fun loadFromDB(): Flow<Game> =
-                localDataSource.getGameById(id).map {
-                    it.toDomain()
+        flow {
+            EspressoIdlingResource.increment()
+            emit(ResponseWrapper.pending(null))
+
+            val response = remoteDataSource.getGame(id = id)
+                .first()
+
+            when (response.state) {
+                State.SUCCESS -> {
+                    val result = response.data?.toModel()
+
+                    emit(ResponseWrapper.success(result))
                 }
-
-            override fun shouldFetch(data: Game?): Boolean = data == null || data.desc == ""
-
-            override suspend fun createCall(): Flow<ResponseWrapper<ResponseGame>> =
-                remoteDataSource.getGame(id)
-
-            override suspend fun saveCallResult(data: ResponseGame, save: Game) {
-                val game = data.toEntity(save)
-                appExecutors.diskIO().execute { localDataSource.updateGame(game) }
+                State.FAILURE -> {
+                    emit(ResponseWrapper.failure(response.message.toString(), null))
+                }
+                State.PENDING -> {}
             }
-
-        }.asFlow()
+            EspressoIdlingResource.decrement()
+        }.flowOn(Dispatchers.IO)
 
 
     override fun getFavoriteGame(): Flow<List<Game>> {
@@ -70,9 +73,19 @@ class GameRepository @Inject constructor(
     }
 
 
-    override fun updateGame(game: Game) {
+    override fun addFavoriteGame(game: Game) {
         EspressoIdlingResource.increment()
-        appExecutors.diskIO().execute { localDataSource.updateGame(game.toEntity()) }
+        appExecutors.diskIO().execute {
+            localDataSource.insertGame(game.toEntity())
+        }
+        EspressoIdlingResource.decrement()
+    }
+
+    override fun removeFavoriteGame(id: Int) {
+        EspressoIdlingResource.increment()
+        appExecutors.diskIO().execute {
+            localDataSource.deleteGame(id)
+        }
         EspressoIdlingResource.decrement()
     }
 

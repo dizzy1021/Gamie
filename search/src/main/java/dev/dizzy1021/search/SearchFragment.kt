@@ -3,7 +3,6 @@ package dev.dizzy1021.search
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -93,7 +92,6 @@ class SearchFragment : Fragment() {
                     }
                 }
             }
-            Log.d("Search Fragment", "Hello - $game")
         })
 
         return binding.root

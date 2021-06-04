@@ -12,6 +12,8 @@ interface IGameRepository {
 
     fun getFavoriteGame(): Flow<List<Game>>
 
-    fun updateGame(game: Game)
+    fun addFavoriteGame(game: Game)
+
+    fun removeFavoriteGame(id: Int)
 
 }

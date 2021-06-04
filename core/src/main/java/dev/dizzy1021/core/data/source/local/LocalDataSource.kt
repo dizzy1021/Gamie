@@ -9,17 +9,10 @@ import javax.inject.Singleton
 @Singleton
 class LocalDataSource @Inject constructor(private val gameDao: GameDao) {
 
-    fun getGames(search: String = ""): Flow<List<GameEntity>> =
-        if (search != "") gameDao.searchGamesByName("%$search%")
-        else gameDao.getGames()
-
-
     fun getFavoriteGames(): Flow<List<GameEntity>> = gameDao.getFavoriteGames()
 
-    fun getGameById(id: Int): Flow<GameEntity> = gameDao.getGameById(id)
+    fun insertGame(game: GameEntity) = gameDao.insertGame(game)
 
-    suspend fun insertBatchGame(games: List<GameEntity>) = gameDao.insertBatchGame(games)
-
-    fun updateGame(game: GameEntity) = gameDao.updateGame(game)
+    fun deleteGame(gameId: Int) = gameDao.deleteGame(gameId)
 
 }

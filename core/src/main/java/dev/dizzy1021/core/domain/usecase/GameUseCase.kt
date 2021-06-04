@@ -11,5 +11,7 @@ interface GameUseCase {
 
     fun getFavoriteGames(): Flow<List<Game>>
 
-    fun updateGame(game: Game)
+    fun addFavoriteGame(game: Game)
+
+    fun removeFavoriteGame(id: Int)
 }

@@ -19,7 +19,11 @@ class DetailViewModel @Inject constructor(
     }
 
     fun addFavorite(game: Game) {
-        useCase.updateGame(game)
+        useCase.addFavoriteGame(game)
+    }
+
+    fun removeFavorite(gameId: Int) {
+        useCase.removeFavoriteGame(gameId)
     }
 
 }

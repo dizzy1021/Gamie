@@ -155,7 +155,12 @@ class DetailFragment : Fragment() {
                 favorited = !favorited
                 game?.isFavorite = favorited
 
-                game?.let { viewModel.addFavorite(it) }
+                game?.let {
+                    if (it.isFavorite)
+                        viewModel.addFavorite(it)
+                    else
+                        viewModel.removeFavorite(it.id)
+                }
 
                 if (favorited) {
                     item.setIcon(R.drawable.ic_baseline_favorite_24)

@@ -16,5 +16,7 @@ class ImplGameRepository @Inject constructor(
 
     override fun getFavoriteGames(): Flow<List<Game>> = gameRepository.getFavoriteGame()
 
-    override fun updateGame(game: Game) = gameRepository.updateGame(game)
+    override fun addFavoriteGame(game: Game) = gameRepository.addFavoriteGame(game)
+
+    override fun removeFavoriteGame(id: Int) = gameRepository.removeFavoriteGame(id)
 }

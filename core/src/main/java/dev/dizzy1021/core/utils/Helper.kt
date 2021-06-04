@@ -23,22 +23,6 @@ fun List<GameEntity>.toDomain(): List<Game> =
         )
     }
 
-fun GameEntity.toDomain(): Game =
-        Game(
-            id = this.id,
-            name = this.name,
-            desc = this.desc,
-            rating = this.rating,
-            poster = this.poster,
-            website = this.website,
-            date = this.date,
-            publisher = this.publisher,
-            publisherPoster = this.publisherPoster,
-            genres = this.genres,
-            screenshot = this.genres,
-            isFavorite = this.isFavorite
-        )
-
 fun Game.toEntity(): GameEntity =
     GameEntity(
         id = this.id,
@@ -55,26 +39,26 @@ fun Game.toEntity(): GameEntity =
         isFavorite = this.isFavorite
     )
 
-fun List<ResultsItemGames>.toEntities(): List<GameEntity> =
+fun List<ResultsItemGames>.toModel(): List<Game> =
     this.map {
-        GameEntity(
+        Game(
             id = it.id,
             name = it.name,
-            desc = "",
+            desc = null,
             rating = it.rating,
             poster = it.backgroundImage,
-            website = "",
+            website = null,
             date = it.released,
-            publisher = "",
-            publisherPoster = "",
+            publisher = null,
+            publisherPoster = null,
             genres = it.genres.joinToString { a -> a.name },
             screenshot = it.shortScreenshots.joinToString { a -> a.image },
             isFavorite = false
         )
     }
 
-fun ResponseGame.toEntity(save: Game? = null): GameEntity =
-        GameEntity(
+fun ResponseGame.toModel(save: Game? = null): Game =
+    Game(
             id = this.id,
             name = this.name,
             desc = this.descriptionRaw,
