@@ -15,8 +15,12 @@ import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.favorite.databinding.FragmentFavoriteBinding
 import dev.dizzy1021.gamie.R
 import dev.dizzy1021.gamie.di.DynamicFeaturesDependencies
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
@@ -28,12 +32,19 @@ class FavoriteFragment : Fragment() {
     private val viewModel: FavoriteViewModel by viewModels { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerFavoriteComponent.builder()
+            .context(requireActivity())
+            .appDependencies(
+                EntryPointAccessors.fromApplication(
+                    requireContext().applicationContext,
+                    DynamicFeaturesDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        DaggerFavoriteComponent.factory().create(
-            EntryPointAccessors.fromApplication(requireContext(), DynamicFeaturesDependencies::class.java)
-        ).inject(this)
     }
 
     override fun onCreateView(
@@ -85,9 +96,6 @@ class FavoriteFragment : Fragment() {
         actionBar?.isVisible = true
 
         actionBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-        actionBar.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -101,6 +109,9 @@ class FavoriteFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+        actionBar.navigationIcon = null
     }
 
 }

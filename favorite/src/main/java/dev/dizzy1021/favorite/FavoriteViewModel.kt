@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val useCase: GameUseCase
+    useCase: GameUseCase
 ): ViewModel() {
 
     val games = useCase.getFavoriteGames().asLiveData()

@@ -7,3 +7,7 @@ const val DB_NAME = "db_gamie"
 const val GAME_TABLE = "tbl_game"
 
 const val BASE_URL = "https://api.rawg.io/api/"
+
+const val HOSTNAME = "rawg.io"
+
+const val PASSPHRASE = "Ync6YDnBApPerh5ayAFKj2PF4XfKhmdT"

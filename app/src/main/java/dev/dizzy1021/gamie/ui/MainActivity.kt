@@ -1,5 +1,6 @@
 package dev.dizzy1021.gamie.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar)
         setContentView(binding.root)
 
+        binding.mainToolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -26,7 +31,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+
         binding.mainToolbar.navigationIcon = null
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q &&
+            isTaskRoot &&
+            supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.backStackEntryCount ?: 0 == 0 &&
+            supportFragmentManager.backStackEntryCount == 0
+        ) {
+            finishAfterTransition()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

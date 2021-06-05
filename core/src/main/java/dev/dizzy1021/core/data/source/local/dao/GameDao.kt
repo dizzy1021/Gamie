@@ -14,6 +14,9 @@ interface GameDao {
     @Query("SELECT * FROM $GAME_TABLE where isFavorite = 1")
     fun getFavoriteGames(): Flow<List<GameEntity>>
 
+    @Query("SELECT * FROM $GAME_TABLE where id = :gameId")
+    fun getGame(gameId: Int): Flow<GameEntity>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertGame(game: GameEntity)
 

@@ -39,12 +39,19 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModels { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerSearchComponent.builder()
+            .context(requireActivity())
+            .appDependencies(
+                EntryPointAccessors.fromApplication(
+                    requireContext().applicationContext,
+                    DynamicFeaturesDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        DaggerSearchComponent.factory().create(
-            EntryPointAccessors.fromApplication(requireContext(), DynamicFeaturesDependencies::class.java)
-        ).inject(this)
     }
 
     override fun onCreateView(

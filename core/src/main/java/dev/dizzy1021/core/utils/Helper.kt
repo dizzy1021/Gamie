@@ -72,3 +72,19 @@ fun ResponseGame.toModel(save: Game? = null): Game =
             screenshot = save?.screenshot,
             isFavorite = save?.isFavorite == true
         )
+
+fun GameEntity.toModel(): Game =
+    Game(
+        id = this.id,
+        name = this.name,
+        desc = this.desc,
+        rating = this.rating,
+        poster = this.poster,
+        website = this.website,
+        date = this.date,
+        publisher = this.publisher,
+        publisherPoster = this.publisherPoster,
+        genres = this.genres,
+        screenshot = this.screenshot,
+        isFavorite = this.isFavorite
+    )

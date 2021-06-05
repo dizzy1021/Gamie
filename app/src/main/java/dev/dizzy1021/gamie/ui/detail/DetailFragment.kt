@@ -134,9 +134,6 @@ class DetailFragment : Fragment() {
         inflater.inflate(R.menu.detail_menu, menu)
 
         actionBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
-        actionBar.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -177,5 +174,8 @@ class DetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+        val actionBar = requireActivity().findViewById<Toolbar>(R.id.main_toolbar)
+        actionBar.navigationIcon = null
     }
 }

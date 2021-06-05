@@ -44,20 +44,27 @@ class GameRepository @Inject constructor(
             EspressoIdlingResource.increment()
             emit(ResponseWrapper.pending(null))
 
-            val response = remoteDataSource.getGame(id = id)
-                .first()
+            val local = localDataSource.getGame(id).firstOrNull()
 
-            when (response.state) {
-                State.SUCCESS -> {
-                    val result = response.data?.toModel()
+            if (local != null) {
+                emit(ResponseWrapper.success(local.toModel()))
+            } else {
+                val response = remoteDataSource.getGame(id = id)
+                    .first()
 
-                    emit(ResponseWrapper.success(result))
+                when (response.state) {
+                    State.SUCCESS -> {
+                        val result = response.data?.toModel()
+
+                        emit(ResponseWrapper.success(result))
+                    }
+                    State.FAILURE -> {
+                        emit(ResponseWrapper.failure(response.message.toString(), null))
+                    }
+                    State.PENDING -> {}
                 }
-                State.FAILURE -> {
-                    emit(ResponseWrapper.failure(response.message.toString(), null))
-                }
-                State.PENDING -> {}
             }
+
             EspressoIdlingResource.decrement()
         }.flowOn(Dispatchers.IO)
 
