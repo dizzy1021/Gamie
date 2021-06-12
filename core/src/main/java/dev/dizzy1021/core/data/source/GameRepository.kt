@@ -14,12 +14,10 @@ import javax.inject.Singleton
 class GameRepository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val appExecutors: AppExecutors
 ): IGameRepository {
 
     override fun callGames(search: String): Flow<ResponseWrapper<List<Game>>> =
         flow {
-            EspressoIdlingResource.increment()
             emit(ResponseWrapper.pending(null))
 
             val response = remoteDataSource.getGames(search = search)
@@ -36,12 +34,10 @@ class GameRepository @Inject constructor(
                 }
                 State.PENDING -> {}
             }
-            EspressoIdlingResource.decrement()
         }.flowOn(Dispatchers.IO)
 
     override fun callGame(id: Int): Flow<ResponseWrapper<Game>> =
         flow {
-            EspressoIdlingResource.increment()
             emit(ResponseWrapper.pending(null))
 
             val local = localDataSource.getGame(id).firstOrNull()
@@ -65,35 +61,21 @@ class GameRepository @Inject constructor(
                 }
             }
 
-            EspressoIdlingResource.decrement()
         }.flowOn(Dispatchers.IO)
 
 
-    override fun getFavoriteGame(): Flow<List<Game>> {
-        EspressoIdlingResource.increment()
-        val result = localDataSource.getFavoriteGames().map {
+    override fun getFavoriteGame(): Flow<List<Game>> =
+        localDataSource.getFavoriteGames().map {
             it.toDomain()
         }
-        EspressoIdlingResource.decrement()
-
-        return result
-    }
 
 
     override fun addFavoriteGame(game: Game) {
-        EspressoIdlingResource.increment()
-        appExecutors.diskIO().execute {
-            localDataSource.insertGame(game.toEntity())
-        }
-        EspressoIdlingResource.decrement()
+        localDataSource.insertGame(game.toEntity())
     }
 
     override fun removeFavoriteGame(id: Int) {
-        EspressoIdlingResource.increment()
-        appExecutors.diskIO().execute {
-            localDataSource.deleteGame(id)
-        }
-        EspressoIdlingResource.decrement()
+        localDataSource.deleteGame(id)
     }
 
 }
