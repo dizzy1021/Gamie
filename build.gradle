@@ -40,7 +40,6 @@ buildscript {
         slf4jVersion = "1.7.9"
         truthVersion = "1.1.2"
         dynamicFeaturesVersion = "2.3.5"
-        jacocoVersion = "0.8.4"
 
     }
 
@@ -53,7 +52,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
-        classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
