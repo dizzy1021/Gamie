@@ -1,4 +1,4 @@
-package dev.dizzy1021.core
+package dev.dizzy1021.gamie
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import com.google.common.truth.Truth

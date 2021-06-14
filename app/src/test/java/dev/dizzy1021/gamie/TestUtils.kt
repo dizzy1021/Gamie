@@ -1,4 +1,4 @@
-package dev.dizzy1021.core
+package dev.dizzy1021.gamie
 
 import androidx.arch.core.executor.TaskExecutor
 import dev.dizzy1021.core.data.source.local.entity.GameEntity
