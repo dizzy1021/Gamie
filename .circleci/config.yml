@@ -25,9 +25,6 @@ jobs:
       - run:
           name: Run Build
           command: ./gradlew build
-      - run:
-          name: Run Code Coverage
-          command: ./gradlew connectedCheck
       - codecov/upload:
           file: './app/build/reports/coverage/debug/report.xml'
           token: b8b41c1a-ad96-4d20-abe1-8375f7d31838
