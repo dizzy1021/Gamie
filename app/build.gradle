@@ -69,6 +69,6 @@ kapt {
     correctErrorTypes true
 }
 
-hilt {
-    enableExperimentalClasspathAggregation = true
-}
+//hilt {
+//    enableExperimentalClasspathAggregation = true
+//}
