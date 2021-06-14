@@ -3,7 +3,6 @@ package dev.dizzy1021.gamie
 import androidx.arch.core.executor.TaskExecutor
 import dev.dizzy1021.core.data.source.local.entity.GameEntity
 import dev.dizzy1021.core.data.source.remote.response.*
-import dev.dizzy1021.core.domain.model.Game
 import dev.dizzy1021.core.utils.ResponseWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -326,45 +325,4 @@ fun generateEntityGame(): Flow<GameEntity> {
     return flow {
         emit(results)
     }
-}
-
-fun generateGames(): List<Game> {
-    val results = ArrayList<Game>()
-
-    results.add(
-        Game(
-            id = 1,
-            name = "NAME",
-            desc = "DESCRIPTION",
-            rating = 0.0,
-            poster = null,
-            website = null,
-            date = null,
-            publisher = null,
-            publisherPoster = null,
-            genres = null,
-            screenshot = null,
-            isFavorite = true
-        )
-    )
-
-    return results
-}
-
-fun generateGame(): Game {
-
-    return Game(
-        id = 1,
-        name = "NAME",
-        desc = "DESCRIPTION",
-        rating = 0.0,
-        poster = null,
-        website = null,
-        date = null,
-        publisher = null,
-        publisherPoster = null,
-        genres = null,
-        screenshot = null,
-        isFavorite = true
-    )
 }
