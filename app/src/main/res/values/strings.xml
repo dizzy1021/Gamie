@@ -1,13 +1,8 @@
 <resources>
     <string name="app_name">Gamie</string>
     <string name="title_favorite">Favorite Module</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_search">Search Module</string>
     <string name="gamie">Gamie</string>
-    <string name="onboard_desc">Explore your games and we live up to your expectations</string>
-    <string name="onboard_illustration">onboard illustration</string>
-    <string name="explore_now">Explore Now</string>
     <string name="games_poster">Games Poster</string>
     <string name="home">Home</string>
     <string name="favorite_games">Favorite Games</string>
