@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.dizzy1021.gamie.di
 
 import dagger.Binds

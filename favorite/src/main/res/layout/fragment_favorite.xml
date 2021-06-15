@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center_vertical"
-        android:text="@string/empty_list"
+        android:text="@string/no_data"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="22sp"
         android:visibility="gone" />

@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     // Networking

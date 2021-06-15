@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Gamie</string>
-    <string name="title_favorite">Favorite Module</string>
-    <string name="title_search">Search Module</string>
     <string name="gamie">Gamie</string>
     <string name="games_poster">Games Poster</string>
     <string name="home">Home</string>
@@ -12,5 +10,4 @@
     <string name="publisher">poster publisher</string>
     <string name="release_at">Release at </string>
     <string name="publisher_title">Publisher</string>
-    <string name="empty_list">No Data</string>
 </resources>

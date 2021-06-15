@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:name=".MainApplication"
         android:theme="@style/Theme.Gamie"
-        tools:targetApi="n">
+        tools:targetApi="n"
+        android:fullBackupContent="@xml/my_backup_rules">
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

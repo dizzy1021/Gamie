@@ -10,7 +10,7 @@ buildscript {
         hiltVersion = "2.34.1-beta"
         hiltJetpackVersion = "1.0.0"
         gradleVersion = "4.1.3"
-        appcompatVersion = "1.2.0"
+        appcompatVersion = "1.3.0"
         materialVersion = "1.3.0"
         constraintLayoutVersion = "2.0.4"
         coreKtxVersion = "1.3.2"
